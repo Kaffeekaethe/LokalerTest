@@ -16,6 +16,7 @@ services:
     restart: "unless-stopped"
   seat_database_copy:
     image: bachelorproject/seat_database_copy
+    container_name: seat_database_copy
     environment:
     - MYSQL_ROOT_PASSWORD=root
     restart: "unless-stopped"
