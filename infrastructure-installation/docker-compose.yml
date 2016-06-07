@@ -1,0 +1,65 @@
+version: '2'
+services:
+  cassandra-1:
+    image: cassandra
+    container_name: cassandra-1
+    environment:
+      CASSANDRA_BROADCAST_ADDRESS: "cassandra-1"
+    ports:
+    - 7000
+    restart: "unless-stopped"
+  seat_database:
+    image: mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    container_name: seat_database
+    restart: "unless-stopped"
+  seat_database_copy:
+    image: bachelorproject/seat_database_copy
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    restart: "unless-stopped"
+    depends_on:
+    - seat_database
+  customer_database:
+    image: mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    container_name: customer_database
+    restart: "unless-stopped"
+  booking_database:
+    image: mysql
+    environment:
+    - MYSQL_ROOT_PASSWORD=root
+    container_name: booking_database
+    restart: "unless-stopped"
+  redis_main_locks:
+    image: redis
+    container_name: redis_main_locks
+    restart: "unless-stopped"
+  redis_ttl_locks:
+    image: redis
+    restart: "unless-stopped"
+    container_name: redis_ttl_locks
+  redis_pricing:
+    image: redis
+    restart: "unless-stopped"
+    container_name: redis_pricing
+  rabbit1:
+    image: bachelorproject/rabbitcluster:latest
+    hostname: rabbit1
+    restart: "unless-stopped"
+    ports:
+    - "15672:15672"
+  redis_main_guards:
+    image: redis
+    restart: "unless-stopped"
+    container_name: redis_main_guards
+  redis_ttl_guards:
+    image: redis
+    restart: "unless-stopped"
+    container_name: redis_ttl_guards
+networks:
+  default:
+    external:
+       name: overlay-network

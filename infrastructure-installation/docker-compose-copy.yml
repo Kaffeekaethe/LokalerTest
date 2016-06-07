@@ -1,0 +1,176 @@
+seat_database:
+  image: mysql
+  environment:
+  - MYSQL_ROOT_PASSWORD=root
+  - SERVICE_NAME=seat_database
+  container_name: seat_database
+  ports:
+  - "3306:3306"
+customer_database:
+  image: mysql
+  environment:
+  - MYSQL_ROOT_PASSWORD=root
+  - SERVICE_NAME=customer_database
+  container_name: customer_database
+  ports:
+  - "3307:3306"
+booking_database:
+  image: mysql
+  environment:
+  - MYSQL_ROOT_PASSWORD=root
+  - SERVICE_NAME=booking_database
+  container_name: booking_database
+  ports:
+  - "3308:3306"
+redis_main_locks:
+  environment:
+    SERVICE_NAME: redis_main_locks
+  image: redis
+  container_name: redis_main_locks
+  ports:
+  - "6379:6379"
+redis_ttl_locks:
+  environment:
+    SERVICE_NAME: redis_ttl_locks
+  image: redis
+  container_name: redis_ttl_locks
+  ports:
+  - "6380:6379"
+redis_pricing:
+  environment:
+    SERVICE_NAME: redis_pricing
+  image: redis
+  container_name: redis_pricing
+  ports:
+  - "6381:6379"
+rabbit1:
+  environment:
+    SERVICE_5672_NAME: rabbit1
+  image: bachelorproject/rabbitcluster
+  container_name: rabbit1
+  hostname: rabbit1
+  ports:
+  - "5672:5672"
+  - "15672:15672"
+rabbit2:
+  image: bachelorproject/rabbitcluster
+  container_name: rabbit2
+  hostname: rabbit2
+  ports:
+  - "5673:5672"
+  - "15673:15672"
+  links:
+    - rabbit1
+  environment:
+    - CLUSTERED=true
+    - CLUSTER_WITH=rabbit1
+    - RAM_NODE=true
+    - SERVICE_5672_NAME=rabbit2
+rabbit3:
+  image: bachelorproject/rabbitcluster
+  container_name: rabbit3
+  hostname: rabbit3
+  ports:
+  - "5674:5672"
+  - "15674:15672"
+  links:
+    - rabbit1
+    - rabbit2
+  environment:
+    - CLUSTERED=true
+    - CLUSTER_WITH=rabbit1
+    - SERVICE_5672_NAME=rabbit3
+cleanup:
+  image: bachelorproject/cleanupservice:latest
+  container_name: cleanup
+  ports:
+  - "8081:8081"
+  environment:
+    - PORT=8081
+    - SERVICE_NAME=cleanup
+booking:
+  image: bachelorproject/bookingservice:latest
+  container_name: booking
+  net: "host"
+  environment:
+  - PORT=8080
+  ports:
+  - "8080:8080"
+customermanagement:
+  image: bachelorproject/customermanagementservice:latest
+  container_name: customermanagement
+  net: "host"
+  environment:
+  - PORT=8082
+  ports:
+  - "8082:8082"
+notification:
+  image: bachelorproject/notificationservice:latest
+  container_name: notification
+  net: "host"
+  environment:
+  - PORT=8083
+  ports:
+  - "8083:8083"
+seatmanagement:
+  image: bachelorproject/seatmanagementservice:latest
+  container_name: seatmanagement
+  net: "host"
+  environment:
+  - PORT=8085
+  ports:
+  - "8085:8085"
+redis_main_guards:
+  environment:
+    SERVICE_NAME: redis_main_guards
+  image: redis
+  container_name: redis_main_guards
+  ports:
+  - "6382:6379"
+redis_ttl_guards:
+  environment:
+    SERVICE_NAME: redis_ttl_guards
+  image: redis
+  container_name: redis_ttl_guards
+  ports:
+  - "6383:6379"
+pricing1:
+  image: bachelorproject/pricingservice
+  container_name: pricing1
+  net: "host"
+  environment:
+  - PORT=8084
+  ports:
+  - "8084:8084"
+pricing2:
+  image: bachelorproject/pricingservice
+  container_name: pricing2
+  net: "host"
+  environment:
+  - PORT=8090
+  ports:
+  - "8090:8090"
+seatoverview1:
+  image: bachelorproject/seatoverviewservice
+  container_name: seatoverview1
+  net: "host"
+  environment:
+  - PORT=8086
+  ports:
+  - "8086:8086"
+seatoverview2:
+  image: bachelorproject/seatoverviewservice
+  container_name: seatoverview21
+  net: "host"
+  environment:
+  - PORT=8087
+  ports:
+  - "8087:8087"
+seatoverview3:
+  image: bachelorproject/seatoverviewservice
+  container_name: seatoverview3
+  net: "host"
+  environment:
+  - PORT=8088
+  ports:
+  - "8088:8088"
