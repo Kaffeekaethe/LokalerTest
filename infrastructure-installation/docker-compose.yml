@@ -19,6 +19,7 @@ services:
     container_name: seat_database_copy
     environment:
     - MYSQL_ROOT_PASSWORD=root
+    - MYSQL_DATABASE=seatmanagement
     restart: "unless-stopped"
     depends_on:
     - seat_database
